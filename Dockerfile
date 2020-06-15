@@ -1,9 +1,5 @@
 FROM ubuntu:19.10
 
-ARG userid
-ARG groupid
-ARG username
-
 RUN apt-get update && apt-get install -y git-core \
  && gnupg flex bison gperf build-essential zip curl \
  && zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 \
@@ -21,16 +17,11 @@ RUN curl -o jdk8.tgz \
 RUN curl -o /usr/local/bin/repo https://storage.googleapis.com/git-repo-downloads/repo \
  && chmod a+x /usr/local/bin/repo
 
-RUN groupadd -g $groupid $username \
- && useradd -m -u $userid -g $groupid $username \
- && echo $username >/root/username \
- && echo "export USER="$username >>/home/$username/.gitconfig
+COPY gitconfig /root/.gitconfig
 
-COPY gitconfig /home/$username/.gitconfig
+RUN chown root:root /root/.gitconfig
 
-RUN chown $userid:$groupid /home/$username/.gitconfig
+ENV HOME=/root
+ENV USER=root
 
-ENV HOME=/home/$username
-ENV USER=$username
-
-ENTRYPOINT chroot --userspec=$(cat /root/username):$(cat /root/username) / /bin/bash -i
+ENTRYPOINT /bin/bash -i
