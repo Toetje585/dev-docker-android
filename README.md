@@ -42,19 +42,19 @@ Ideally, you would want to establish docker `host:container` mounts to store you
 
 ## Create Host Dev Directory
 
-Create a directory on your **host** OS where you plan on to store your Android project components (<HOST Parent path>).  At a high level, and for the purposes of an example, if I was going to start work on an a *LineageOS 15* build, I would create a directory on the host specific to my *Lineage15*:
+Create a directory on your **host** OS where you plan on to store your Android project components (<HOST_Parent_path>).  At a high level, and for the purposes of an example, if I was going to start work on an a *LineageOS 15* build, I would create a directory on the host specific to my *Lineage15*:
 
 ```
-mkdir <HOST Parent path>/Lineage15
+mkdir <HOST_Parent_path>/Lineage15
 ```
 
-## Run the Docker Image with Mounts
+## Run the Docker Image with host:container Mounts
 
-Continuing from the example above, if I've created my **host** project directory as `<HOST Parent path>/Lineage15` , and want to work/access this path from within the **container** at `/root/Lineage15` then I would run the following:
+Continuing from the example above, if I've created my **host** project directory as `<HOST_Parent_path>/Lineage15` , and want to work/access this path from within the **container** at `/root/Lineage15` then I would run the following:
 
 ```
-sudo docker run -it --rm -v <HOST Parent path>/Lineage15:\ 
+sudo docker run -it --rm -v <HOST_Parent_path>/Lineage15:\ 
 /root/Lineage15 android-dev
 ```
 
-Your build components are now accessible from the host at : `<HOST Parent path>/Lineage15` and from within the container at : `/root/Lineage15`.
+Your build components are now accessible from the host at : `<HOST_Parent_path>/Lineage15` and from within the container at : `/root/Lineage15`.
