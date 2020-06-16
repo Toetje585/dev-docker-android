@@ -38,22 +38,23 @@ sudo docker build -t android-dev .
 
 Generally speaking, you'd be using this image to develop and build Android code sourced from git repos.  
 
-Ideally, you would want to establish docker `host:container` mounts to store your Android source and build output. This is to also ensure that you do not lose any of your Android code/build artifacts when pruning your docker images/containers.
+Ideally, you would want to establish docker `host:container` mounts to store your Android source and build output components. The mount is to also ensure that you do not lose any of your Android code/build artifacts, in cases such as pruning your docker images/containers.
 
 ## Create Host Dev Directory
 
-Create a directory on your host OS. At a high level, and for the purposes of an example, if I was going to start work on an Android Nougat AOSP build, I would create a directory on the host and call it `nougat`:
+Create a directory on your **host** OS where you plan on to store your Android project components (<HOST Parent path>).  At a high level, and for the purposes of an example, if I was going to start work on an a *LineageOS 15* build, I would create a directory on the host specific to my *Lineage15*:
 
 ```
-mkdir <parent path>/nougat
+mkdir <HOST Parent path>/Lineage15
 ```
 
 ## Run the Docker Image with Mounts
 
-Assuming you've created your *host path* as `<parent path>/nougat` , run the image as follows to map this host folder to docker the container's internal location being `/root/nougat`:
+Continuing from the example above, if I've created my **host** project directory as `<HOST Parent path>/Lineage15` , and want to work/access this path from within the **container** at `/root/Lineage15` then I would run the following:
 
 ```
-sudo docker run -it --rm -v <parent path>/nougat/:/root/nougat/ android-dev
+sudo docker run -it --rm -v <HOST Parent path>/Lineage15:\ 
+/root/Lineage15 android-dev
 ```
 
-You can now use the docker container and specify `/root/nougat` as the `TOP LEVEL` directory for your Android  components.
+Your build components are now accessible from the host at : `<HOST Parent path>/Lineage15` and from within the container at : `/root/Lineage15`.
