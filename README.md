@@ -83,12 +83,12 @@ After you've issued the `cd /lineage15` from within your container, you can kick
 
 # Why use docker --privileged --cap-add=ALL?
 
-In the `docker run` command above, the run option of `--privileged` was specified for the purposes of allowing the container  access to **host** devices.  
+In the `docker run` command, the run option of `--privileged` was specified for the purposes of allowing the container  access to **host** devices.  
 
 Many may consider this as an "obtrusive" approach from a security perspective.  It was mainly used to allow the container access **host** devices `/dev/loop` and the physical smartphone via `adb`.
 
 You can fine-tune the access by exposing only a subset of host devices to the container by specifying the `--device` option.
 
-In regards to the use of `--cap-add=ALL`, this was due to the build process generating kernel module errors when building Lineage from within a container.  The explicit capabilities required for inclusion with `--cap-add` is something that needs more investigation and the same applies in terms of identifying a subset of capabilities required, rather than a blanket "ALL".  
+In regards to the use of `--cap-add=ALL`, this was added to eliminate kernel module errors encountered during the build of Lineage from within a container.  The explicit capabilities required for inclusion with `--cap-add` is something that needs more investigation and the same applies in terms of identifying a subset of capabilities required, rather than a blanket "ALL".  
 
-It goes without saying that this setup is not intended to be used in a Production environment.  
+This setup is not intended to be used in a Production environment and if you plan on doing so, further fine-tuning and enhancements.
