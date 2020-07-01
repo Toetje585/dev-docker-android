@@ -80,6 +80,9 @@ RUN curl -o /usr/local/bin/repo https://storage.googleapis.com/git-repo-download
 COPY sdat2img.py /usr/local/bin/sdat2img.py
 RUN chmod 755 /usr/local/bin/sdat2img.py
 
+COPY build-metadata/lineage-build-targets.txt /lineage-build-targets.txt
+RUN chmod 775 /lineage-build-targets.txt
+
 RUN groupadd -g $groupid $username \
  && useradd -m -u $userid -g $groupid $username \
  && echo $username" ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
