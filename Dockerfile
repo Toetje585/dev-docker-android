@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 
 ## build 
 ## docker build --build-arg userid=$(id -u) --build-arg groupid=$(id -g) --build-arg username=$(id -un) -t android-dev .
@@ -50,11 +50,12 @@ RUN apt-get update && apt-get install -y android-tools-adb \
    xsltproc \
    zip \
    zlib1g-dev \
-   libwxgtk3.0-dev \
    brotli \
    simg2img \
    patchelf \
    sudo \
+   vim \
+   nano \
  && apt-get purge --auto-remove -yqq \
  && apt-get autoremove -yqq --purge \
  && apt-get clean \
@@ -66,12 +67,12 @@ RUN apt-get update && apt-get install -y android-tools-adb \
      /usr/share/doc \
      /usr/share/doc-base
 
-RUN curl -o jdk8.tgz \
- https://android.googlesource.com/platform/prebuilts/jdk/jdk8/+archive/master.tar.gz \
- && mkdir -p /usr/lib/jvm/java-8-openjdk-amd64 \
- && tar -zxf jdk8.tgz linux-x86 \
- && mv linux-x86 /usr/lib/jvm/java-8-openjdk-amd64 \
- && rm -rf jdk8.tgz
+RUN curl -o jdk9.tgz \
+ https://android.googlesource.com/platform/prebuilts/jdk/jdk9/+archive/master.tar.gz \
+ && mkdir -p /usr/lib/jvm/java-9-openjdk-amd64 \
+ && tar -zxf jdk9.tgz linux-x86 \
+ && mv linux-x86 /usr/lib/jvm/java-9-openjdk-amd64 \
+ && rm -rf jdk9.tgz
 
 RUN curl -o /usr/local/bin/repo https://storage.googleapis.com/git-repo-downloads/repo \
  && chmod a+x /usr/local/bin/repo \
@@ -89,12 +90,16 @@ RUN groupadd -g $groupid $username \
  && echo $username >/root/username \
  && usermod -aG sudo $username
 
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 COPY gitconfig /etc/gitconfig
 
 ENV HOME=/home/$username
 ENV USER=$username
-ENV JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/linux-x86"
+ENV JAVA_HOME="/usr/lib/jvm/java-9-openjdk-amd64/linux-x86"
 ENV PATH="$JAVA_HOME/bin":$PATH
-ENV ANDROID_JACK_VM_ARGS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4G"
-
+ENV ANDROID_JACK_VM_ARGS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx8G"
+ENV USE_CCACHE=1
+ENV CCACHE_EXEC=/usr/bin/ccache
+ENV CCACHE_DIR=/ccache
 ENTRYPOINT chroot --userspec=$(cat /root/username):$(cat /root/username) / /bin/bash -i

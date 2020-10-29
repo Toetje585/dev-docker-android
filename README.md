@@ -1,26 +1,28 @@
-# Docker for Building Android from Source
+# Docker for Building Lineage OS/AOSP Projects + from Source (ZTE Devices)
 
-This repo contains Docker Bundle with Tools for Compiling/Building Android
+This repo contains Docker Bundle with Tools for Compiling/Building Android for the https://github.com/msm8996-devs project, altrough it will work with mostly all aosp projects.
 
-The final image aims to simplify the Android build process by bundling necessary tools into an image.  If there are other repos that already provide this capability, then I don't really care :).  This was my own exploration piece, my side gig into finding out more on Android and Docker. 
-
-It was originally built for compiling AOSP 10 for use as an AVD.  It was later expanded to facilitate building Lineage OS 15.1 for a ***ZTE Axon 7 (A2017G) smartphone device***.  If you do plan on using it, you may need a tweak (or two) for your specific setup.
+It was originally built by tonys-code-base/dev-docker-android. And then expanded to facilitate building Lineage up to 17.1 for ***ZTE smartphone devices***.
 
 Notes regarding the the final image:
 
-* Derived from Ubuntu official base image `-->` `docker pull ubuntu:19.10`.
+* Derived from Ubuntu official base image `-->` `docker pull ubuntu:20.04`.
 * Packs in Python script [sdat2img](https://github.com/xpirt/sdat2img) 'as is', which is used to convert from Android data images to ext4 format.
 * Leverages from the [Dockerfile](https://android.googlesource.com/platform/build/+/master/tools/docker/Dockerfile), as reference at [Android's Official Build Requirements](https://source.android.com/setup/build/requirements#software-requirements).
-* The image has been tested for building Android `Lineage OS 15.1 ` for an Android ZTE Axon 7 smartphone.  You can modify the Dockerfile and add/remove project-specific components as required.
-* Tested for build of an Android 10 AOSP (API 29) AVD.
-* The Linux host OS used for testing was Ubuntu 19.10.
+* The image has been tested for building Android `Lineage OS 15.1 - 17.1 ` for an Android ZTE Axon 7 smartphone.  You can modify the Dockerfile and add/remove project-specific components as required.
+* CCache is enabled by default and set to /ccache users can set the cache size by using "ccache -M 50G" in terminal default is set to 5g which is not recommended.
+
+# Motivation
+
+The idea behind the project is to allow developers/contributors to quickly setup a build environment on any modern Linux opperating system supporting docker.
+
 
 # Installation Instructions
 
 * Clone the repo to your local host as follows:
 
 ```
-git clone https://github.com/tonys-code-base/dev-docker-android.git
+git clone https://github.com/Toetje585/dev-docker-android.git
 ```
 
 * Update the cloned repo's `gitconfig` file to reflect the git identity to use.  *Note: This is treated as a "Container/Image Wide" git identify, i.e. it ends up in /etc/gitconfig*
@@ -56,31 +58,31 @@ Ideally, an Android root project path (`<HOST_Parent_path>`) should be establish
 
 ## Create Host Working Directory
 
-Create a directory on your **host** (`<HOST_Parent_path>`) where you plan to store your Android project components.  As an example, if I was going to start work on an a Lineage OS15.1 build, I'd create the host project directory for the build as *$HOME/lineage15*, i.e:
+Create a directory on your **host** (`<HOST_Parent_path>`) where you plan to store your Android project components.  As an example, if I was going to start work on an a Lineage OS17.1 build, I'd create the host project directory for the build as *$HOME/lineage17*, i.e:
 
 ```
-mkdir $HOME/lineage15
+mkdir $HOME/lineage17
 ```
 
 ## Run Docker Image with host:container Mount
 
-Continuing from the example above, with **host** project path as `$HOME/lineage15`, the following command using the `-v` option, would setup host path to be mounted within the **container** at target `/lineage15`:
+Continuing from the example above, with **host** project path as `$HOME/lineage15`, the following command using the `-v` option, would setup host path to be mounted within the **container** at target `/lineage17`:
 
 ```
 sudo docker run -it --rm --privileged \
 --cap-add=ALL \
--v $HOME/lineage15:/lineage15 android-dev
+-v $HOME/lineage17:/lineage17 android-dev
 ```
 
 You can now start using the environment from within the **container**, by changing directory to the project folder:
 
 ```
-cd /lineage15
+cd /lineage17
 ```
 
 ## Kick-off
 
-After you've issued the `cd /lineage15` from within your container, you can kick-off development by the usual commands as  as `repo init`, `repo init -u` to retrieve the Android repo you wish to work with.
+After you've issued the `cd /lineage17` from within your container, you can kick-off development by the usual commands as  as `repo init`, `repo init -u` to retrieve the Android repo you wish to work with.
 
 # Why use docker --privileged --cap-add=ALL?
 
@@ -93,3 +95,9 @@ You can fine-tune the access by exposing only a subset of host devices to the co
 In regards to the use of `--cap-add=ALL`, this was added to eliminate kernel module errors encountered during the build of Lineage from within a container.  The explicit capabilities required for inclusion with `--cap-add` is something that needs more attention in terms of identifying a subset of capabilities required, rather than a blanket "ALL".
 
 This setup is not intended to be used in a Production environment without further fine-tuning.
+
+
+# Example docker run:
+
+sudo docker run -it --rm --privileged --cap-add=ALL -v /mnt/examplessddrive/msm8996-devs/lineage17:/lineage17 -v /mnt/examplessddrive/msm8996-devs/lineage_dloads:/lineage_dloads -v /mnt/examplessddrive/msm8996-devs/ccache:/ccache android-dev           
+
