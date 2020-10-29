@@ -66,7 +66,7 @@ mkdir $HOME/lineage17
 
 ## Run Docker Image with host:container Mount
 
-Continuing from the example above, with **host** project path as `$HOME/lineage15`, the following command using the `-v` option, would setup host path to be mounted within the **container** at target `/lineage17`:
+Continuing from the example above, with **host** project path as `$HOME/lineage17`, the following command using the `-v` option, would setup host path to be mounted within the **container** at target `/lineage17`:
 
 ```
 sudo docker run -it --rm --privileged \
